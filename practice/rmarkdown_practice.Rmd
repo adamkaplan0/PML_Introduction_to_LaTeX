@@ -1,0 +1,75 @@
+---
+title: "Sample RMarkdown Document"
+author: "Adam Kaplan"
+output: pdf_document
+date: "2023-09-15"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(foreign)
+```
+
+# Basics
+Here is my sample `rmarkdown` document. You can write in Markdown, while adding in executable `R` code:
+```{r}
+x <- 2 + 2
+```
+
+Or non-executable code:
+```{r}
+y <- 2 + 3
+```
+
+As well as LaTeX chunks:
+
+$$
+\begin{aligned}
+ Y_i &= \alpha + \beta x_i + \varepsilon_i  \\
+ Y_i - \varepsilon_i &= \alpha + \beta x_i  \\
+\end{aligned} 
+$$
+
+# `R` and LaTeX in RMarkdown
+
+The powerful part of RMarkdown is that you can include R outputs, such as plots or tables directly without having to mess around with LaTeX code.
+
+## Plots
+```{r pressure}
+head(cars)
+plot(pressure)
+```
+
+## Tables
+
+```{r, results = 'asis'}
+# we will use mtcars dataset already in R
+
+our_table <- mtcars %>% 
+  group_by(cyl) %>%
+  summarize(mean_mpg = mean(mpg))
+
+library(xtable)
+print(xtable(our_table))
+
+print(xtable(our_table),
+       file = "./our_table.tex")
+```
+
+```{r, results = 'asis'}
+our_reg <- lm(cyl ~ mpg, data = mtcars)
+
+library(stargazer)
+stargazer(our_reg,
+          header = FALSE)
+
+stargazer(our_reg, 
+          header = FALSE,
+          out = "./our_reg.tex")
+```
+
+
+# Acknowledgements
+
+I assemble this document from multiple other introductory RMarkdown documents written by Elizabeth Parker-Magyar.
